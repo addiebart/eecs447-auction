@@ -12,7 +12,6 @@ export default async function Navbar() {
 		{ href: '/', label: 'Home' },
 		{ href: '/auctions', label: 'Auctions' },
 		{ href: '/create', label: 'Create' },
-		{ href: '/example', label: 'Example' },
 	]
 
 	return (

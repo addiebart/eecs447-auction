@@ -18,12 +18,12 @@ export async function POST(request: Request) {
         const {data: tuples, error} = await admin.from("users").select("username").eq("username", username)
         if (error) throw error
         if (tuples.length > 0) {
-            return NextResponse.json({message: "Username is already registered."}, { status: 400 });
+            return NextResponse.json({error: "Username is already registered."}, { status: 400 });
         }
         const res = await admin.from("users").insert({username: username, password: password, address: address})
         const cs = await cookies()
-        const p1 = cs.set("username", username)
-        const p2 = cs.set("password", password)
+        const p1 = cs.set({ name: "username", value: username, httpOnly: false, path: "/" })
+        const p2 = cs.set({ name: "password", value: password, httpOnly: false, path: "/" })
         await Promise.all([p1, p2])
         return NextResponse.json({meessage: "Login successful"}, { status: 200 });
     } catch (err) {

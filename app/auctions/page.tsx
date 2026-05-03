@@ -10,15 +10,14 @@ export default async function AuctionsPage() {
         t.iid === null ||
         t.item_name === null ||
         t.seller_name === null ||
-        t.seller_uid === null ||
-        t.sold === null
+        t.seller_uid === null
     }))  {
         throw new Error("Illegal null state on auctions_page_data")
     };
 
     return (
         <main className="grow flex flex-col m-4 items-center">
-            <h1 className="text-4xl self-center m-4 p-2 underline">Active Auctions</h1>
+            <h1 className="text-4xl self-center m-4 p-2 underline">Auctions</h1>
 
             <section className="flex flex-col gap-4">
                 <TuplesDisplay tuples={tuples} />

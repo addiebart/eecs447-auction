@@ -1,6 +1,6 @@
 "use client"
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { SubmitEvent } from "react";
 
 function clearValueFields(...inputElements: HTMLInputElement[]) {
@@ -31,7 +31,7 @@ export default function LoginForm() {
             return
         }
         try {
-            const res = await axios.post("/api/login", {username: userValue, password: passwdValue})
+            const res = await axios.post("/api/login", {username: userValue, password: passwdValue}, { withCredentials: true })
             if (res.status >= 200 && res.status <= 299) {
                 location.pathname = "/" // use instead of next toolkit to reload cookies
             }
@@ -41,7 +41,12 @@ export default function LoginForm() {
             }
         }
         catch (e) {
-            console.error(`The POST request itself failed. ${e}`)
+            if (!(e instanceof AxiosError)) throw e
+            if (e.response?.data.error) {
+                alert(`The login was unsuccessful. "${e.response.data.error}"`);
+                clearValueFields(...fields)
+            }
+            else console.error(`The POST request itself failed. ${e}`)
         }
     }
     

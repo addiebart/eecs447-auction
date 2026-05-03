@@ -24,7 +24,7 @@ export type Database = {
         }
         Insert: {
           bid_id?: never
-          bid_timestamp: string
+          bid_timestamp?: string
           iid: number
           price: number
           uid: number
@@ -66,36 +66,23 @@ export type Database = {
           end_time: string
           iid: number
           name: string
-          sold: boolean
-          winner: number | null
         }
         Insert: {
           created_by: number
           end_time: string
           iid?: never
           name: string
-          sold?: boolean
-          winner?: number | null
         }
         Update: {
           created_by?: number
           end_time?: string
           iid?: never
           name?: string
-          sold?: boolean
-          winner?: number | null
         }
         Relationships: [
           {
             foreignKeyName: "item_created_by_fkey"
             columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["uid"]
-          },
-          {
-            foreignKeyName: "item_winner_fkey"
-            columns: ["winner"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["uid"]
@@ -134,7 +121,6 @@ export type Database = {
           max_bidder: string | null
           seller_name: string | null
           seller_uid: number | null
-          sold: boolean | null
         }
         Relationships: [
           {

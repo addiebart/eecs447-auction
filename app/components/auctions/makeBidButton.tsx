@@ -1,6 +1,6 @@
 "use client"
 
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { MouseEvent } from "react"
 
 export default function MakeBidBtnAuctions({iid, name, current} : {iid: number, name: string, current: number}) {
@@ -20,13 +20,18 @@ export default function MakeBidBtnAuctions({iid, name, current} : {iid: number, 
                 amount = Number.parseInt(promptResult)
             }
 
-            const res = await axios.post("/api/make-bid", {username, password, iid, amount})
-            if (res.status >= 200 && res.status <= 299) {
-                alert(`Your bid on ${name} was successfully placed for $${amount}.`)
-                location.reload() // not using react :P
+            try {
+                const res = await axios.post("/api/make-bid", {iid, amount}, { withCredentials: true })
+                if (res.status >= 200 && res.status <= 299) {
+                    alert(`Your bid on ${name} was successfully placed for $${amount}.`)
+                    location.reload() // not using react :P
+                }
             }
-            else {
-                alert(`Your bid failed due to an error in your request: "${res.data}"`)
+            catch (e) {
+                if (!(e instanceof AxiosError)) {
+                    throw e;
+                }
+                alert(`Your bid failed due to an error in your request: "${e.response?.data.error ?? "Unknown server error"}"`)
             }
         }
 
