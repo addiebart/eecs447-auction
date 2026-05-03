@@ -1,7 +1,11 @@
 import admin from "@/utils/supabase/admin";
 import TuplesDisplay from "../components/auctions/tuplesDisplay";
+import { cookies } from "next/headers";
 
 export default async function AuctionsPage() {
+
+    const cs = await cookies()
+    const username = (await cs.get("username"))?.value
 
     const {data: tuples, error} = await admin.from("auctions_page_data").select("*")
     if (error) throw error;
@@ -20,7 +24,7 @@ export default async function AuctionsPage() {
             <h1 className="text-4xl self-center m-4 p-2 underline">Auctions</h1>
 
             <section className="flex flex-col gap-4">
-                <TuplesDisplay tuples={tuples} />
+                <TuplesDisplay tuples={tuples} username={username} />
             </section>
         </main>
     );
