@@ -12,7 +12,7 @@ export default async function CreatePage() {
             <h1 className="text-4xl self-center m-4 p-2 underline">Create Auction</h1>
 
             <div className="flex flex-col flex-1 justify-center items-center">
-                { loggedIn ? <CreateForm /> : <div></div> }
+                { loggedIn ? <CreateForm /> : <div>You must log in before you can create auctions.</div> }
             </div>
             <div className="flex-3"></div>
         </main>
