@@ -1,6 +1,13 @@
+import { cookies } from 'next/headers'
 import Link from 'next/link'
+import LogoutButton from '../navbar/logoutButton'
 
-export default function Navbar() {
+export default async function Navbar() {
+
+	const headerCookies = await cookies()
+	const [username, password] = await Promise.all([headerCookies.get("username"), headerCookies.get("password")])
+	const loggedIn = username?.value !== undefined && password?.value !== undefined
+
 	const links = [
 		{ href: '/', label: 'Home' },
 		{ href: '/auctions', label: 'Auctions' },
@@ -17,7 +24,7 @@ export default function Navbar() {
 				<div className="flex items-center justify-between h-14">
 					<div className="flex items-center space-x-4">
 						<Link href="/" className="font-semibold text-base">
-							Auction
+							EECS 447 Auction Site
 						</Link>
 
 						<div className="hidden md:flex items-center space-x-2">
@@ -34,18 +41,22 @@ export default function Navbar() {
 						</div>
 					</div>
 
+
+					{ loggedIn ? 
+					<LogoutButton /> :
 					<div className="flex items-center space-x-3">
 						<Link href="/login" className="text-sm px-2 py-1" style={{ color: 'var(--foreground)' }}>
 							Sign in
 						</Link>
 						<Link
-							href="/signup"
+							href="/sign-up"
 							className="text-sm px-3 py-1 border"
 							style={{ color: 'var(--foreground)', borderColor: 'var(--foreground)' }}
 						>
 							Sign up
 						</Link>
-					</div>
+					</div>}
+
 				</div>
 			</div>
 		</nav>

@@ -3,15 +3,14 @@ import admin from "@/utils/supabase/admin";
 export default async function ExamplePage() {
     // at /example
 
-    const {data: tuples, error} = await admin.from("users").select("username");
+    const {data: tuples, error} = await admin.from("users").select("username, uid");
     if (error) throw error;
-    const usernames = tuples?.map(tuple => tuple.username) ?? [];
     
     return (
         <div className="w-fit">
             <h1 className="text-2xl w-fit"></h1>
             <ul>
-                {usernames?.map(username => <li className="border">{username}</li>)}
+                {tuples?.map(tuple => <li className="border" key={tuple.uid}>{tuple.username}</li>)}
             </ul>
         </div>
     )

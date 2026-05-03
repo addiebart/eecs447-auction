@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
   uid integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   address varchar(50) NOT NULL,
-  username varchar(20) NOT NULL,
+  username varchar(20) NOT NULL DISTINCT,
   password varchar(20) NOT NULL -- You're crazy if you think im hashing passwords for this project.
 );
 
@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS item (
   winner integer REFERENCES users(uid) ON DELETE SET NULL ON UPDATE CASCADE,
   name varchar(100) NOT NULL,
   end_time timestamp NOT NULL,
-  sold boolean NOT NULL DEFAULT false
+  sold boolean NOT NULL DEFAULT false,
+  created_by integer NOT NULL REFERENCES users(uid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS bid (
@@ -23,6 +24,27 @@ CREATE TABLE IF NOT EXISTS bid (
 
 CREATE INDEX IF NOT EXISTS idx_bid_uid ON bid(uid);
 CREATE INDEX IF NOT EXISTS idx_bid_iid ON bid(iid);
+
+CREATE VIEW auctions_page_data AS
+SELECT DISTINCT ON (item.iid)
+  item.iid,
+  item.name as item_name,
+  end_time,
+  item.created_by as seller_uid,
+  seller.username as seller_name,
+  bid.price as max_bid,
+  bidder.username as max_bidder,
+  item.sold
+FROM item
+JOIN bid ON item.iid = bid.iid
+JOIN users AS bidder ON bid.uid = bidder.uid
+JOIN users AS seller ON item.created_by = seller.uid
+WHERE bid.price = (
+  SELECT MAX(bid2.price)
+  FROM bid AS bid2
+  WHERE bid2.iid = item.iid
+)
+ORDER BY item.iid, bid.bid_id ASC;
 
 INSERT INTO users (address, username, password) VALUES
 ('123 Maple St','alice','pass1'),
@@ -41,17 +63,17 @@ INSERT INTO users (address, username, password) VALUES
 ('159 Palm St','peggy','pass14'),
 ('753 Redwood St','trent','pass15');
 
-INSERT INTO item (winner, name, end_time) VALUES
-(NULL, 'Laptop', '2026-05-01 12:00:00'),
-(NULL, 'Phone', '2026-05-02 13:00:00'),
-(NULL, 'Tablet', '2026-05-03 14:00:00'),
-(NULL, 'Headphones', '2026-05-04 15:00:00'),
-(NULL, 'Camera', '2026-05-05 16:00:00'),
-(NULL, 'Watch', '2026-05-06 17:00:00'),
-(NULL, 'Keyboard', '2026-05-07 18:00:00'),
-(NULL, 'Monitor', '2026-05-08 19:00:00'),
-(NULL, 'Mouse', '2026-05-09 20:00:00'),
-(NULL, 'Speaker', '2026-05-10 21:00:00');
+INSERT INTO item (winner, name, end_time, created_by) VALUES
+(NULL, 'Laptop', '2026-05-01 12:00:00',1),
+(NULL, 'Phone', '2026-05-02 13:00:00',2),
+(NULL, 'Tablet', '2026-05-03 14:00:00',3),
+(NULL, 'Headphones', '2026-05-04 15:00:00',4),
+(NULL, 'Camera', '2026-05-05 16:00:00',5),
+(NULL, 'Watch', '2026-05-06 17:00:00',6),
+(NULL, 'Keyboard', '2026-05-07 18:00:00',7),
+(NULL, 'Monitor', '2026-05-08 19:00:00',8),
+(NULL, 'Mouse', '2026-05-09 20:00:00',9),
+(NULL, 'Speaker', '2026-05-10 21:00:00',10);
 
 INSERT INTO bid (uid, iid, price, bid_timestamp) VALUES
 (1,1,500,'2026-04-01 10:00:00'),

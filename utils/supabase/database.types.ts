@@ -41,6 +41,13 @@ export type Database = {
             foreignKeyName: "bid_iid_fkey"
             columns: ["iid"]
             isOneToOne: false
+            referencedRelation: "auctions_page_data"
+            referencedColumns: ["iid"]
+          },
+          {
+            foreignKeyName: "bid_iid_fkey"
+            columns: ["iid"]
+            isOneToOne: false
             referencedRelation: "item"
             referencedColumns: ["iid"]
           },
@@ -55,6 +62,7 @@ export type Database = {
       }
       item: {
         Row: {
+          created_by: number
           end_time: string
           iid: number
           name: string
@@ -62,6 +70,7 @@ export type Database = {
           winner: number | null
         }
         Insert: {
+          created_by: number
           end_time: string
           iid?: never
           name: string
@@ -69,6 +78,7 @@ export type Database = {
           winner?: number | null
         }
         Update: {
+          created_by?: number
           end_time?: string
           iid?: never
           name?: string
@@ -76,6 +86,13 @@ export type Database = {
           winner?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "item_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["uid"]
+          },
           {
             foreignKeyName: "item_winner_fkey"
             columns: ["winner"]
@@ -108,7 +125,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      auctions_page_data: {
+        Row: {
+          end_time: string | null
+          iid: number | null
+          item_name: string | null
+          max_bid: number | null
+          max_bidder: string | null
+          seller_name: string | null
+          seller_uid: number | null
+          sold: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "item_created_by_fkey"
+            columns: ["seller_uid"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["uid"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
