@@ -5,6 +5,7 @@ export default async function Page() {
       <h2 className="text-3xl"> Use the Navbar to get around the site.</h2>
       <div className="h-8"></div>
       <h2 className="text-3xl">Addison Bartelli, Adira Mongar, and Zach McCauley</h2>
+      <p className="md:hidden text-red-500">This site should not be viewed on mobile devices</p>
     </main>
   )
 }
