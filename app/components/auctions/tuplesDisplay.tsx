@@ -7,8 +7,8 @@ import MakeBidBtnAuctions from "./makeBidButton"
 
 export default function TuplesDisplay({tuples,username}:{tuples:any[],username?:string}) {
 
-    const activeTuples = tuples.filter(t => Date.parse(t.end_time!) > Date.now())
-    const inactiveTuples = tuples.filter(t => Date.parse(t.end_time!) <= Date.now())
+    const activeTuples = tuples.filter(t => Date.parse(t.end_time! + "Z") > Date.now())
+    const inactiveTuples = tuples.filter(t => Date.parse(t.end_time! + "Z") <= Date.now())
     const wonTuples = inactiveTuples.filter(t => t.max_bidder && t.max_bidder === username)
 
     const [filter, setFilter] = useState<"active" | "inactive" | "won">("active")
