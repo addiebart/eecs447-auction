@@ -44,7 +44,7 @@ export default function TuplesDisplay({tuples,username}:{tuples:any[],username?:
                 <p>Ends At: {(new Date(t.end_time! + "Z")).toLocaleString().replace(/:[0-9][0-9] /," ")}</p>
                 <p>Current Bid: ${t.max_bid ?? 0}{t.max_bidder ? ` by ${t.max_bidder}` : ""}</p>
                 <p>Sold By: {t.seller_name}</p>
-                <MakeBidBtnAuctions iid={t.iid!} name={t.item_name!} current={t.max_bid ?? 0} />
+                <MakeBidBtnAuctions iid={t.iid!} name={t.item_name!} current={t.max_bid ?? 0} active={Date.parse(t.end_time! + "Z") > Date.now()} />
             </React.Fragment>
         ))}
     </div>

@@ -3,7 +3,7 @@
 import axios, { AxiosError } from "axios"
 import { MouseEvent } from "react"
 
-export default function MakeBidBtnAuctions({iid, name, current} : {iid: number, name: string, current: number}) {
+export default function MakeBidBtnAuctions({iid, name, current, active} : {iid: number, name: string, current: number, active: boolean}) {
     async function handleClick(e: MouseEvent<HTMLButtonElement>) {
         const usernamePromise = cookieStore.get("username")
         const passwordPromise = cookieStore.get("password")
@@ -43,9 +43,9 @@ export default function MakeBidBtnAuctions({iid, name, current} : {iid: number, 
     return (
         <button type="button" 
             className="border-l hover:bg-green-300 hover:cursor-pointer hover:text-black"
-            onClick={handleClick}
+            onClick={active ? handleClick : () => {alert("This item auction is no longer active")}}
         >
-            Make Bid
+            {active ? "Make Bid" : "Ended"}
         </button>
     );
 }
