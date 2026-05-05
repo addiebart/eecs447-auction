@@ -27,21 +27,16 @@ CREATE VIEW auctions_page_data AS
 SELECT DISTINCT ON (item.iid)
   item.iid,
   item.name as item_name,
-  end_time,
+  item.end_time,
   item.created_by as seller_uid,
   seller.username as seller_name,
   bid.price as max_bid,
   bidder.username as max_bidder
 FROM item
-JOIN bid ON item.iid = bid.iid
-JOIN users AS bidder ON bid.uid = bidder.uid
 JOIN users AS seller ON item.created_by = seller.uid
-WHERE bid.price = (
-  SELECT MAX(bid2.price)
-  FROM bid AS bid2
-  WHERE bid2.iid = item.iid
-)
-ORDER BY item.iid, bid.bid_id ASC;
+LEFT JOIN bid ON item.iid = bid.iid
+LEFT JOIN users AS bidder ON bid.uid = bidder.uid
+ORDER BY item.iid, bid.price DESC NULLS LAST, bid.bid_id DESC;
 
 INSERT INTO users (address, username, password) VALUES
 ('123 Maple St','alice','pass1'),
